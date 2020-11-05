@@ -200,4 +200,7 @@
     <!-- Whether to allow network traffic on statusbar -->
     <bool name="config_supportsNetworkTrafficOnStatusBar">true</bool>
 
+    <!-- Default value for Horizon light color (Blue) -->
+    <integer name="config_AmbientPulseLightColor">0x3980FF</integer>
+
 </resources>
