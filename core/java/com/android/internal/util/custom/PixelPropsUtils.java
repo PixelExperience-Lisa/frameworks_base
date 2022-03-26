@@ -59,7 +59,8 @@ public class PixelPropsUtils {
             "com.android.vending",
             "com.breel.wallpapers20",
             "com.nothing.smartcenter",
-            "com.netflix.mediaclient"
+            "com.netflix.mediaclient",
+            "com.nhs.online.nhsonline"
     };
 
     private static final String[] streamingPackagesToChange = {
