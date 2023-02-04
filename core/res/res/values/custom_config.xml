@@ -203,7 +203,4 @@
     <!-- Default value for Horizon light color (Blue) -->
     <integer name="config_AmbientPulseLightColor">0x3980FF</integer>
 
-    <!-- Device model (Build.MODEL) to spoof for netflix, if not empty -->
-    <string name="config_netflixSpoofModel" translatable="false"></string>
-
 </resources>
