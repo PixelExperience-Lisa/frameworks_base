@@ -59,6 +59,7 @@ public class PixelPropsUtils {
             "com.android.vending",
             "com.breel.wallpapers20",
             "com.nothing.smartcenter",
+            "com.netflix.mediaclient",
             "com.nhs.online.nhsonline",
             "com.snapchat.android"
     };
@@ -66,6 +67,7 @@ public class PixelPropsUtils {
     private static final String[] streamingPackagesToChange = {
             "com.amazon.avod.thirdpartyclient",
             "com.disney.disneyplus",
+            "com.netflix.mediaclient",
             "in.startv.hotstar"
     };
 
@@ -103,8 +105,7 @@ public class PixelPropsUtils {
     private static final String[] packagesToChangeMI11 = {
             "com.ea.gp.apexlegendsmobilefps",
             "com.mobile.legends",
-            "com.tencent.tmgp.sgame",
-            "com.netflix.mediaclient"
+            "com.tencent.tmgp.sgame"
     };
 
     private static final String[] packagesToKeep = {
@@ -203,6 +204,10 @@ public class PixelPropsUtils {
 
             if (packageName.equals("com.google.android.apps.photos")) {
                 propsToChange.putAll(propsToChangePixelXL);
+            } else if (packageName.equals("com.netflix.mediaclient") &&
+                        !SystemProperties.getBoolean("persist.sys.pixelprops.netflix", true)) {
+                    if (DEBUG) Log.d(TAG, "Netflix spoofing disabled by system prop");
+                    return;
             } else if (packageName.equals("com.android.vending")) {
                 sIsFinsky = true;
                 return;
@@ -230,10 +235,6 @@ public class PixelPropsUtils {
 
             if (Arrays.asList(packagesToChangeMI11).contains(packageName)) {
                 propsToChange.putAll(propsToChangeMI11);
-            } else if (packageName.equals("com.netflix.mediaclient") &&
-                        !SystemProperties.getBoolean("persist.sys.pixelprops.netflix", true)) {
-                    if (DEBUG) Log.d(TAG, "Netflix spoofing disabled by system prop");
-                    return;
             }
 
             if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
