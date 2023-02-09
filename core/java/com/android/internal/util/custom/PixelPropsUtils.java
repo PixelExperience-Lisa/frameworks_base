@@ -35,14 +35,6 @@ public class PixelPropsUtils {
     private static final String TAG = PixelPropsUtils.class.getSimpleName();
     private static final String DEVICE = "org.pixelexperience.device";
     private static final boolean DEBUG = false;
-    
-    private static final String PACKAGE_ASI = "com.google.android.settings.intelligence";
-    private static final String PACKAGE_FINSKY = "com.android.vending";
-    private static final String PACKAGE_GMS = "com.google.android.gms";
-    private static final String PACKAGE_GPHOTOS = "com.google.android.apps.photos";
-    private static final String PACKAGE_NETFLIX = "com.netflix.mediaclient";
-    private static final String PROCESS_GMS_UNSTABLE = ".unstable";
-    private static final String PROCESS_GMS_PERSISTENT = ".persistent";
 
     private static final String SAMSUNG = "com.samsung.android.";
 
@@ -65,6 +57,7 @@ public class PixelPropsUtils {
 
     private static final String[] extraPackagesToChange = {
             "com.android.chrome",
+            "com.android.vending",
             "com.breel.wallpapers20",
             "com.nothing.smartcenter",
             "com.netflix.mediaclient",
@@ -158,7 +151,7 @@ public class PixelPropsUtils {
     static {
         propsToKeep = new HashMap<>();
         propsToChange = new HashMap<>();
-        propsToKeep.put(PACKAGE_ASI, new ArrayList<>(Collections.singletonList("FINGERPRINT")));
+        propsToKeep.put("com.google.android.settings.intelligence", new ArrayList<>(Collections.singletonList("FINGERPRINT")));
         propsToChangePixel7Pro = new HashMap<>();
         propsToChangePixel7Pro.put("BRAND", "google");
         propsToChangePixel7Pro.put("MANUFACTURER", "Google");
@@ -203,12 +196,6 @@ public class PixelPropsUtils {
         if (Arrays.asList(packagesToKeep).contains(packageName)) {
             return;
         }
-        sIsFinsky = packageName.equals(PACKAGE_FINSKY);
-        if (packageName.equals(PACKAGE_GMS)) {
-             final String processName = Application.getProcessName();
-             sIsGms = processName.contains(PROCESS_GMS_UNSTABLE) || processName.contains(PROCESS_GMS_PERSISTENT);
-             spoofBuildGms(sIsGms);
-        }
         if (packageName.startsWith("com.google.")
                 || packageName.startsWith(SAMSUNG)
                 || Arrays.asList(extraPackagesToChange).contains(packageName)
@@ -216,7 +203,7 @@ public class PixelPropsUtils {
 
             boolean isPixelDevice = Arrays.asList(pixelCodenames).contains(SystemProperties.get(DEVICE));
 
-            if (packageName.equals(PACKAGE_GPHOTOS)) {
+            if (packageName.equals("com.google.android.apps.photos")) {
                 propsToChange.putAll(propsToChangePixelXL);
             } else if (packageName.equals("com.netflix.mediaclient") &&
                         !SystemProperties.getBoolean("persist.sys.pixelprops.netflix", true)) {
@@ -262,8 +249,16 @@ public class PixelPropsUtils {
                 if (DEBUG) Log.d(TAG, "Defining " + key + " prop for: " + packageName);
                 setPropValue(key, value);
             }
+            if (packageName.equals("com.google.android.gms")) {
+                final String processName = Application.getProcessName();
+                if (processName.equals("com.google.android.gms.unstable")) {
+                    sIsGms = true;
+                    spoofBuildGms();
+                }
+                return;
+            }
             // Set proper indexing fingerprint
-            if (packageName.equals(PACKAGE_ASI)) {
+            if (packageName.equals("com.google.android.settings.intelligence")) {
                 setPropValue("FINGERPRINT", Build.VERSION.INCREMENTAL);
             }
         }
@@ -313,24 +308,16 @@ public class PixelPropsUtils {
         }
     }
 
-    private static void spoofBuildGms(boolean isGms) {
-    	if (!isGms) return;
+    private static void spoofBuildGms() {
         // Alter model name and fingerprint to avoid hardware attestation enforcement
-        setBuildField("BRAND", "google");
-        setBuildField("DEVICE", "walleye");
-        setBuildField("FINGERPRINT", "google/walleye/walleye:8.1.0/OPM1.171019.011/4448085:user/release-keys");
-        setBuildField("ID", "OPM1.171019.011");
-        setBuildField("MANUFACTURER", "Google");
-        setBuildField("MODEL", "Pixel 2");
-        setBuildField("PRODUCT", "walleye");
-        setBuildField("SECURITY_PATCH", "2017-12-05");
-        setBuildField("TYPE", "user");
+        setBuildField("FINGERPRINT", "google/angler/angler:6.0/MDB08L/2343525:user/release-keys");
+        setBuildField("MODEL", Build.MODEL + "\u200b");
         setVersionField("DEVICE_INITIAL_SDK_INT", Build.VERSION_CODES.S);
     }
 
     private static boolean isCallerSafetyNet() {
         return Arrays.stream(Thread.currentThread().getStackTrace())
-                .anyMatch(elem -> elem.getClassName().toLowerCase().contains("droidguard"));
+                .anyMatch(elem -> elem.getClassName().contains("DroidGuard"));
     }
 
     public static void onEngineGetCertificateChain() {
