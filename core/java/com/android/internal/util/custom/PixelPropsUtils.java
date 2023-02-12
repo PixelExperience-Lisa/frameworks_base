@@ -254,11 +254,18 @@ public class PixelPropsUtils {
                 if (DEBUG) Log.d(TAG, "Defining " + key + " prop for: " + packageName);
                 setPropValue(key, value);
             }
-            if (packageName.equals("com.google.android.gms")) {
+            if (packageName.equals("com.google.android.gms")
+                || packageName.toLowerCase().contains("androidx.test")
+                || packageName.toLowerCase().equals("com.google.android.apps.restore")) {
                 final String processName = Application.getProcessName();
-                if (processName.equals("com.google.android.gms.unstable")) {
+                if (processName.toLowerCase().contains("unstable")
+                    || processName.toLowerCase().contains("pixelmigrate")
+                    || processName.toLowerCase().contains("instrumentation")) {
                     sIsGms = true;
-                    spoofBuildGms();
+                    setPropValue("FINGERPRINT", "google/walleye/walleye:8.1.0/OPM1.171019.011/4448085:user/release-keys");
+                    dlog("Setting sdk to 32");
+                    setVersionField("DEVICE_INITIAL_SDK_INT", Build.VERSION_CODES.S);
+                    //spoofBuildGms();
                 } else if (processName.toLowerCase().contains("persistent")) {
                 propsToChange.putAll(propsToChangePixel6Pro);
                 }
