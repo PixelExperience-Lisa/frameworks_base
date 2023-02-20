@@ -266,7 +266,9 @@ public class PixelPropsUtils {
                     dlog("Setting sdk to 32");
                     setVersionField("DEVICE_INITIAL_SDK_INT", Build.VERSION_CODES.S);
                     //spoofBuildGms();
-                } else if (processName.toLowerCase().contains("persistent")) {
+                } else if (processName.toLowerCase().contains("persistent")
+                            || processName.toLowerCase().contains("ui")
+                            || processName.toLowerCase().contains("learning")) {
                 propsToChange.putAll(propsToChangePixel6Pro);
                 }
                 return;
