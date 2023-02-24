@@ -5309,20 +5309,17 @@ public final class NotificationPanelViewController extends PanelViewController {
             mReTickerContentTV.setText(mergedContentText);
             mReTickerContentTV.setTextAppearance(mView.getContext(), R.style.TextAppearance_Notifications_reTicker);
             mReTickerContentTV.setSelected(true);
-            RetickerAnimations.revealAnimation(mReTickerComeback);
+            RetickerAnimations.doBounceAnimationIn(mReTickerComeback);
             if (reTickerIntent != null) {
                 mReTickerComeback.setOnClickListener(v -> {
-                    final GameSpaceManager gameSpace = mCentralSurfaces.getGameSpaceManager();
-                    if (gameSpace == null || !gameSpace.isGameActive()) {
-                        try {
-                            reTickerIntent.send();
-                        } catch (PendingIntent.CanceledException e) {
-                        }
+                    try {
+                        reTickerIntent.send();
+                    } catch (PendingIntent.CanceledException e) {
                     }
-                    RetickerAnimations.revealAnimationHide(mReTickerComeback, mNotificationStackScroller);
+                    RetickerAnimations.doBounceAnimationOut(mReTickerComeback, mNotificationStackScroller);
                     reTickerViewVisibility();
-                }
-            });
+                });
+            }
         } else {
             reTickerDismissal();
         }
