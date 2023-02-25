@@ -42,6 +42,7 @@ public class PixelPropsUtils {
     private static final String SAMSUNG = "com.samsung.android.";
     private static final String PACKAGE_NETFLIX = "com.netflix.mediaclient";
 
+    private static final Map<String, Object> propsToChange;
     private static final Map<String, Object> propsToChangePixel5;
     private static final Map<String, Object> propsToChangePixel7Pro;
     private static final Map<String, Object> propsToChangePixelXL;
@@ -155,6 +156,7 @@ public class PixelPropsUtils {
 
     static {
         propsToKeep = new HashMap<>();
+        propsToChange = new HashMap<>();
         propsToKeep.put("com.google.android.settings.intelligence", new ArrayList<>(Collections.singletonList("FINGERPRINT")));
         propsToChangePixel7Pro = new HashMap<>();
         propsToChangePixel7Pro.put("BRAND", "google");
@@ -250,7 +252,6 @@ public class PixelPropsUtils {
                 if (DEBUG) Log.d(TAG, "Defining " + key + " prop for: " + packageName);
                 setPropValue(key, value);
             }
-	    Map<String, Object> propsToChange = new HashMap<>();
             if (packageName.equals("com.google.android.gms")
                 || packageName.toLowerCase().contains("androidx.test")
                 || packageName.toLowerCase().equals("com.google.android.apps.restore")) {
